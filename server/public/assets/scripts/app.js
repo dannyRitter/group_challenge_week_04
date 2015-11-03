@@ -15,15 +15,18 @@ onClick = function(){
         $.each($(this).serializeArray(), function(i, field){
             values[field.name] = field.value;
         });
-        console.log(values);
+        //console.log(values);
+        $.ajax({
+            type: "POST",
+            url: "/bigData",
+            data: values,
+            beforeSend: function(){
+                console.log("Here's the info getting sent", values)},
+            success: function(data){
+                console.log("Post Complete");
+            }
+        })
     });
 
-    $.ajax({
-        type: "POST",
-        url: "/bigData",
-        data: values,
-        success: function(data){
-            console.log(data);
-        }
-    })
+
 };
