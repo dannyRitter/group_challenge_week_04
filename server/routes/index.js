@@ -5,6 +5,8 @@ var express = require('express');
 
 var router = express.Router();
 var path = require('path');
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
 
 var bigName = require('./nameGenerator.js');
 var salary = require('./salaryGenerator.js');
@@ -12,11 +14,23 @@ var years = require('./yearsOfService.js');
 
 var employee = {};
 
+mongoose.connect('mongodb://localhost/employeeDb');
+mongoose.model('Employee', new Schema({"firstName": String, "lastName": String, "gender": String, "salary": String, "yearsService": String}, {collection: 'employeeDb'}));
+var Employee = mongoose.model('Employee');
+
 router.route('/bigData')
     .post(function(req, res){
         var inputInfo = req.body;
+        var newEmployee = createEmployee(inputInfo);
 
-        res.send(createEmployee(inputInfo));
+        var goDataB = new Employee(newEmployee);
+        goDataB.save(function(err, newEmployee) {
+            if (err) {
+                console.log(err);
+            } else {
+                res.send(newEmployee);
+            }
+        });
     });
 
 
